@@ -1,5 +1,4 @@
 <!-- See the ../guides/writing-the-cypress-changelog.md for details on writing the changelog. -->
-
 ## 13.16.1
 
 _Released 11/26/2024 (PENDING)_
@@ -7,6 +6,7 @@ _Released 11/26/2024 (PENDING)_
 **Bugfixes:**
 
 - Support multiple imports of one module with multiple lines. Addressed in [#30314](https://github.com/cypress-io/cypress/pull/30314).
+- Prevent overwriting of video files on across multiple runs. Addresses [#8280](https://github.com/cypress-io/cypress/issues/8280). Addressed in [#30673](https://github.com/cypress-io/cypress/pull/30673).
 
 ## 13.16.0
 
