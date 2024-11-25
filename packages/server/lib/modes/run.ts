@@ -13,7 +13,7 @@ import Reporter from '../reporter'
 import browserUtils from '../browsers'
 import { openProject } from '../open_project'
 import * as videoCapture from '../video_capture'
-import { fs } from '../util/fs'
+import { fs, getPath } from '../util/fs'
 import runEvents from '../plugins/run_events'
 import env from '../util/env'
 import trash from '../util/trash'
@@ -224,15 +224,24 @@ async function trashAssets (config: Cfg) {
   }
 }
 
-async function startVideoRecording (options: { previous?: VideoRecording, project: Project, spec: SpecWithRelativeRoot, videosFolder: string }): Promise<VideoRecording> {
+async function startVideoRecording (options: { previous?: VideoRecording, project: Project, spec: SpecWithRelativeRoot, videosFolder: string, overwrite: boolean }): Promise<VideoRecording> {
   if (!options.videosFolder) throw new Error('Missing videoFolder for recording')
 
-  function videoPath (suffix: string) {
-    return path.join(options.videosFolder, options.spec.relativeToCommonRoot + suffix)
+  async function videoPath (suffix: string, ext: string) {
+    const specPath = options.spec.relativeToCommonRoot + suffix
+    const data = {
+      name: specPath,
+      testFailure: false,
+      testAttemptIndex: 0,
+      titles: [],
+    }
+
+    // getPath returns a Promise!!!
+    return await getPath(data, ext, options.videosFolder, options.overwrite)
   }
 
-  const videoName = videoPath('.mp4')
-  const compressedVideoName = videoPath('-compressed.mp4')
+  const videoName = await videoPath('', 'mp4')
+  const compressedVideoName = await videoPath('-compressed', 'mp4')
 
   const outputDir = path.dirname(videoName)
 
@@ -332,6 +341,13 @@ async function compressRecording (options: { quiet: boolean, videoCompression: n
   // or we've been told not to upload the video
   if (options.videoCompression === false || options.videoCompression === 0) {
     debug('skipping compression')
+
+    // the getSafePath used to get the compressedVideoName creates the file
+    // in order to check if the path is safe or not. So here, if the compressed
+    // file exists, we remove it as compression is not enabled
+    if (fs.existsSync(options.processOptions.compressedVideoName)) {
+      await fs.remove(options.processOptions.compressedVideoName)
+    }
 
     return
   }
@@ -945,7 +961,7 @@ async function runSpec (config, spec: SpecWithRelativeRoot, options: { project: 
   async function getVideoRecording () {
     if (!options.video) return undefined
 
-    const opts = { project, spec, videosFolder: options.videosFolder }
+    const opts = { project, spec, videosFolder: options.videosFolder, overwrite: options.config.trashAssetsBeforeRuns }
 
     telemetry.startSpan({ name: 'video:capture' })
 
