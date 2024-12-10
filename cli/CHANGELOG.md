@@ -1,12 +1,20 @@
 <!-- See the ../guides/writing-the-cypress-changelog.md for details on writing the changelog. -->
-## 13.16.1
+## 13.16.2
 
-_Released 11/26/2024 (PENDING)_
+_Released 12/17/2024 (PENDING)_
 
 **Bugfixes:**
 
-- Support multiple imports of one module with multiple lines. Addressed in [#30314](https://github.com/cypress-io/cypress/pull/30314).
+- Fixed an issue where targets may hang if `Network.enable` is not implemented for the target. Addresses [#29876](https://github.com/cypress-io/cypress/issues/29876).
 - Prevent overwriting of video files on across multiple runs. Addresses [#8280](https://github.com/cypress-io/cypress/issues/8280). Addressed in [#30673](https://github.com/cypress-io/cypress/pull/30673).
+
+## 13.16.1
+
+_Released 12/03/2024_
+
+**Bugfixes:**
+
+- During recorded or parallel runs, execution will fail if Cypress is unable to confirm the creation of an instance instead of skipping the spec. Addresses [#30628](https://github.com/cypress-io/cypress/issues/30628).
 
 ## 13.16.0
 
