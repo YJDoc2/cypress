@@ -6,7 +6,7 @@ _Released 12/17/2024 (PENDING)_
 **Bugfixes:**
 
 - Fixed an issue where targets may hang if `Network.enable` is not implemented for the target. Addresses [#29876](https://github.com/cypress-io/cypress/issues/29876).
-- Prevent overwriting of video files across multiple runs. Addresses [#8280](https://github.com/cypress-io/cypress/issues/8280). Addressed in [#30673](https://github.com/cypress-io/cypress/pull/30673).
+- Fixed an issue where the configuration setting `trashAssetsBeforeRuns=false` was ignored for assets in the `videosfolder` and these assets were incorrectly deleted before running tests with `cypress run`. Addresses [#8280](https://github.com/cypress-io/cypress/issues/8280).
 - Updated Firefox `userChrome.css` to correctly hide the toolbox during headless mode. Addresses [#30721](https://github.com/cypress-io/cypress/issues/30721).
 
 ## 13.16.1
