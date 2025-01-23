@@ -8,6 +8,7 @@ import sizeOf from 'image-size'
 import colorString from 'color-string'
 import * as plugins from './plugins'
 import { fs, getPath } from './util/fs'
+import type { Data } from './util/fs'
 
 let debug = Debug('cypress:server:screenshot')
 
@@ -15,35 +16,6 @@ let debug = Debug('cypress:server:screenshot')
 let __ID__: string | null = null
 
 type ScreenshotsFolder = string | false | undefined
-
-interface Clip {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-// TODO: This is likely not representative of the entire Type and should be updated
-interface Data {
-  specName: string
-  name: string
-  startTime: Date
-  viewport: {
-    width: number
-    height: number
-  }
-  titles?: string[]
-  testFailure?: boolean
-  overwrite?: boolean
-  simple?: boolean
-  current?: number
-  total?: number
-  testAttemptIndex?: number
-  appOnly?: boolean
-  hideRunnerUi?: boolean
-  clip?: Clip
-  userClip?: Clip
-}
 
 // TODO: This is likely not representative of the entire Type and should be updated
 interface Details {

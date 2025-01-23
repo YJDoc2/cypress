@@ -29,13 +29,34 @@ interface PromisifiedFsExtra {
   outputFileAsync: Promisified<typeof fsExtra.outputFileSync>
 }
 
-type PathOptions = {
-  specName?: string
+interface Clip {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+// TODO: This is likely not representative of the entire Type and should be updated
+export interface Data {
+  specName: string
   name: string
-  testFailure: boolean
-  testAttemptIndex: number
-  titles: Array<string>
-};
+  startTime: Date
+  viewport: {
+    width: number
+    height: number
+  }
+  titles?: string[]
+  testFailure?: boolean
+  overwrite?: boolean
+  simple?: boolean
+  current?: number
+  total?: number
+  testAttemptIndex?: number
+  appOnly?: boolean
+  hideRunnerUi?: boolean
+  clip?: Clip
+  userClip?: Clip
+}
 
 export const fs = Bluebird.promisifyAll(fsExtra) as PromisifiedFsExtra & typeof fsExtra
 
@@ -80,7 +101,7 @@ const sanitizeToString = (title: any, idx: number, arr: Array<string>) => {
   return sanitize(_.toString(title))
 }
 
-export const getPath = async function (data: PathOptions, ext: string, screenshotsFolder: string, overwrite: boolean): Promise<string> {
+export const getPath = async function (data: Data, ext: string, screenshotsFolder: string, overwrite: boolean): Promise<string> {
   let names
   const specNames = (data.specName || '')
   .split(pathSeparatorRe)
@@ -103,7 +124,7 @@ export const getPath = async function (data: PathOptions, ext: string, screensho
     names[index] = `${names[index]} (failed)`
   }
 
-  if (data.testAttemptIndex > 0) {
+  if (data.testAttemptIndex && data.testAttemptIndex > 0) {
     names[index] = `${names[index]} (attempt ${data.testAttemptIndex + 1})`
   }
 
