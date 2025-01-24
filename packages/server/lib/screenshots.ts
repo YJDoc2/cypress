@@ -8,14 +8,12 @@ import sizeOf from 'image-size'
 import colorString from 'color-string'
 import * as plugins from './plugins'
 import { fs, getPath } from './util/fs'
-import type { Data } from './util/fs'
+import type { Data, ScreenshotsFolder } from './util/fs'
 
 let debug = Debug('cypress:server:screenshot')
 
 // internal id incrementor
 let __ID__: string | null = null
-
-type ScreenshotsFolder = string | false | undefined
 
 // TODO: This is likely not representative of the entire Type and should be updated
 interface Details {

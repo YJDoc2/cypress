@@ -36,12 +36,14 @@ interface Clip {
   height: number
 }
 
+export type ScreenshotsFolder = string | false | undefined
+
 // TODO: This is likely not representative of the entire Type and should be updated
 export interface Data {
-  specName: string
   name: string
   startTime: Date
-  viewport: {
+  specName?: string
+  viewport?: {
     width: number
     height: number
   }
@@ -60,7 +62,7 @@ export interface Data {
 
 export const fs = Bluebird.promisifyAll(fsExtra) as PromisifiedFsExtra & typeof fsExtra
 
-const ensureSafePath = async function (withoutExt: string, extension: string | null, overwrite: boolean, num: number = 0): Promise<string> {
+const ensureSafePath = async function (withoutExt: string, extension: string | null, overwrite: boolean | undefined, num: number = 0): Promise<string> {
   const suffix = `${(num && !overwrite) ? ` (${num})` : ''}.${extension}`
 
   const maxSafePrefixBytes = maxSafeBytes - suffix.length
@@ -101,7 +103,7 @@ const sanitizeToString = (title: any, idx: number, arr: Array<string>) => {
   return sanitize(_.toString(title))
 }
 
-export const getPath = async function (data: Data, ext: string | null, screenshotsFolder: string, overwrite: boolean): Promise<string> {
+export const getPath = async function (data: Data, ext: string | null, screenshotsFolder: ScreenshotsFolder, overwrite: boolean | undefined): Promise<string> {
   let names
   const specNames = (data.specName || '')
   .split(pathSeparatorRe)
@@ -128,7 +130,13 @@ export const getPath = async function (data: Data, ext: string | null, screensho
     names[index] = `${names[index]} (attempt ${data.testAttemptIndex + 1})`
   }
 
-  const withoutExt = path.join(screenshotsFolder, ...specNames, ...names)
+  let withoutExt
+
+  if (screenshotsFolder) {
+    withoutExt = path.join(screenshotsFolder, ...specNames, ...names)
+  } else {
+    withoutExt = path.join(...specNames, ...names)
+  }
 
   return await ensureSafePath(withoutExt, ext, overwrite)
 }

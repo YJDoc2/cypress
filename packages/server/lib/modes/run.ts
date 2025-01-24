@@ -13,7 +13,7 @@ import Reporter from '../reporter'
 import browserUtils from '../browsers'
 import { openProject } from '../open_project'
 import * as videoCapture from '../video_capture'
-import { fs, getPath } from '../util/fs'
+import { fs, getPath, type Data } from '../util/fs'
 import runEvents from '../plugins/run_events'
 import env from '../util/env'
 import trash from '../util/trash'
@@ -229,7 +229,8 @@ async function startVideoRecording (options: { previous?: VideoRecording, projec
 
   async function videoPath (suffix: string, ext: string) {
     const specPath = options.spec.relativeToCommonRoot + suffix
-    const data = {
+    // tslint:disable-next-line
+    const data: Data = {
       name: specPath,
       testFailure: false,
       testAttemptIndex: 0,
